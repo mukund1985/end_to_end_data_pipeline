@@ -1,0 +1,35 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Terraform/**'
+      - '.github/workflows/deploy_infrastructure.yml'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./Terraform
+
+      - name: Terraform Plan
+        run: terraform plan -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}'
+        working-directory: ./Terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}'
+        working-directory: ./Terraform
