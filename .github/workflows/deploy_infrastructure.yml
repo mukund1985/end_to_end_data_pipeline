@@ -23,13 +23,28 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Init
+        env: # Set environment variables for Terraform AzureRM provider authentication
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
         run: terraform init
         working-directory: ./Terraform
 
       - name: Terraform Plan
-        run: terraform plan -var 'arm_subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}' -var 'arm_tenant_id=${{ secrets.ARM_TENANT_ID }}' -var 'arm_client_id=${{ secrets.ARM_CLIENT_ID }}' -var 'arm_client_secret=${{ secrets.ARM_CLIENT_SECRET }}' -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}'
+        env: # Repeat environment variables for each Terraform step
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        run: terraform plan -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}'
         working-directory: ./Terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var 'arm_subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}' -var 'arm_tenant_id=${{ secrets.ARM_TENANT_ID }}' -var 'arm_client_id=${{ secrets.ARM_CLIENT_ID }}' -var 'arm_client_secret=${{ secrets.ARM_CLIENT_SECRET }}' -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}'
+        env: # Repeat environment variables for each Terraform step
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+        run: terraform apply -auto-approve -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}'
         working-directory: ./Terraform
