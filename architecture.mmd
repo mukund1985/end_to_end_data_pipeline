@@ -1,0 +1,19 @@
+graph LR
+    SQL[("On-prem SQL Server Database")] --> |"A new Row"| ADF[("ADF\nIngestion")]
+    ADF -->|Data flows into| ADL[("Azure Data Lake Gen2")]
+    ADL -- "Bronze Layer" --> Databricks[("Azure Databricks")]
+    Databricks -.->|Transformed Data| ADL
+    ADL -- "Silver Layer" --> Databricks
+    Databricks -.->|Curated Data| ADL
+    ADL -- "Gold Layer" --> Synapse[("Azure Synapse Analytics\nLoading")]
+    Synapse --> PowerBI[("Power BI\nReporting")]
+
+    subgraph Security & Governance
+        AD -->[("Azure Active Directory")]
+        AKV[("Azure Key Vault")]
+    end
+
+    ADF -.->|Metadata, Logs| SG[Security & Governance]
+    Databricks -.-> SG
+    Synapse -.-> SG
+    PowerBI -.-> SG
