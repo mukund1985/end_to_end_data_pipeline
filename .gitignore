@@ -38,4 +38,4 @@ secrets/
 credentials/
 
 # Ignore DevOps pipeline definitions, which may contain sensitive information
-.devops/
+# .devops/
