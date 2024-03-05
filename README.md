@@ -101,7 +101,7 @@ This guide provides a comprehensive roadmap for setting up and managing our end-
 ## Folder Structure
 
 ```
-end_to_end_data_pipeline/
+End_To_End_Data_Pipeline/
 ├── .devops/
 │   ├── ci_pipeline.yml             # CI pipeline definition for Azure DevOps
 │   ├── cd_pipeline.yml             # CD pipeline definition for Azure DevOps
