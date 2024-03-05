@@ -1,0 +1,11 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo "Starting CI pipeline defined in .devops/ci_pipeline.yml"
+  displayName: 'Run CI Pipeline'
+
+# Include additional steps as necessary
