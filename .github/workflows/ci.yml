@@ -15,8 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Terraform Init
         run: terraform init
@@ -26,5 +31,3 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
-
-    # Add more steps if necessary
