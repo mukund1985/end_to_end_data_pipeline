@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: master # Point to the latest commit on the master branch
+    rev: v1.88.0 # Point to the latest commit on the master branch
     hooks:
       - id: terraform_fmt
       - id: terraform_validate
