@@ -1,8 +1,13 @@
 repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.88.0 # Ensure this points to the version you intend to use
+    hooks:
+      - id: terraform_fmt
   - repo: local
     hooks:
       - id: terraform_validate_local
         name: Terraform Validate
         entry: ./Scripts/validate_terraform.sh
         language: script
-        types: [terraform]
+        always_run: true
+        verbose: true
