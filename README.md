@@ -1,5 +1,6 @@
 # end_to_end_data_pipeline
 
+```
 Data_Pipeline/
 ├── Ingestion/
 │ ├── Scripts/ # Scripts for data ingestion
@@ -25,3 +26,4 @@ Data_Pipeline/
 ├── Pipelines/ # Azure Data Factory pipeline definitions
 ├── Templates/ # ADF templates
 └── Configs/ # ADF configuration files
+```
