@@ -1,0 +1,41 @@
+# Terraform ignore rules
+**/*.tfstate
+**/*.tfvars
+.terraform/
+*.tfstate.backup
+*.tfplan
+
+# Ignore all log files
+*.log
+
+# Ignore environment variable declarations
+.env
+.env.*
+
+# Ignore Mac system files
+.DS_Store
+
+# Ignore IDE specific files
+.idea/
+.vscode/
+*.code-workspace
+
+# Ignore Python virtual environment
+end_to_end_data/
+*.pyc
+__pycache__/
+
+# Ignore PySpark configs
+spark-warehouse/
+metastore_db/
+*.db
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore secrets files and directories
+secrets/
+credentials/
+
+# Ignore DevOps pipeline definitions, which may contain sensitive information
+.devops/
