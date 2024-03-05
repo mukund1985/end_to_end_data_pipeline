@@ -23,7 +23,7 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Init
-        env: # Set environment variables for Terraform AzureRM provider authentication
+        env: # Set environment variables for the Azure provider
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -32,7 +32,7 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Plan
-        env: # Repeat environment variables for each Terraform step
+        env: # Set environment variables for the Azure provider
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -41,7 +41,7 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Apply
-        env: # Repeat environment variables for each Terraform step
+        env: # Set environment variables for the Azure provider
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
