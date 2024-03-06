@@ -2,10 +2,10 @@ name: Update Backend Configuration
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ['Initial Infrastructure Setup']
-    types:
-      - completed
+#   workflow_run:
+#     workflows: ['Initial Infrastructure Setup']
+#     types:
+#       - completed
 
 jobs:
   update_backend:
@@ -23,7 +23,7 @@ jobs:
         id: get_resource_details
 
       - name: Print Current Directory
-        run: bash -c 'cd /home/runner/work/end_to_end_data_pipeline && ls -ltr'
+        run: bash -c 'cd /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline && ls -ltr'
 
     #   - name: Setup Backend
     #     run: |
