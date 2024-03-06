@@ -1,0 +1,42 @@
+name: Initial Infrastructure Setup
+
+on:
+  workflow_dispatch:
+
+jobs:
+  setup_infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: latest
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./Terraform
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: ./Terraform
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./Terraform
+
+      - name: Output Storage Account Name
+        id: output_storage_account
+        run: echo "::set-output name=storage_account_name::$(terraform output -raw storage_account_name)"
+        working-directory: ./Terraform
+
+      - name: Output Container Name
+        id: output_container_name
+        run: echo "::set-output name=container_name::$(terraform output -raw container_name)"
+        working-directory: ./Terraform
