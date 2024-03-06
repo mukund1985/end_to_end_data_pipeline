@@ -1,44 +1,37 @@
 name: Deploy Infrastructure
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Terraform/**'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'Terraform/**'
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 60 # Prevent running indefinitely
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2 # Updated to use v2
+        uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: latest
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }} # If using Terraform Cloud (optional)
 
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }} # Assuming AZURE_CREDENTIALS is a JSON of your service principal credentials
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Terraform Format
-        run: terraform fmt -check
-        working-directory: ./Terraform
-
-      - name: Terraform Init
+      - name: Terraform Init with Backend
         run: terraform init
         working-directory: ./Terraform
 
       - name: Terraform Plan
-        run: |
-          terraform plan -var 'resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}' -var 'location=${{ secrets.LOCATION }}' -out=tfplan
+        run: terraform plan -out=tfplan
         working-directory: ./Terraform
 
       - name: Terraform Apply
-        run: |
-          terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan
         working-directory: ./Terraform
