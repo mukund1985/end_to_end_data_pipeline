@@ -7,6 +7,13 @@ STORAGE_ACCOUNT_NAME="$2"
 CONTAINER_NAME="$3"
 ACCESS_KEY="$4"
 
+# Print the values to be used for updating backend.tf
+echo "Updating backend.tf with the following values:"
+echo "RESOURCE_GROUP_NAME: $RESOURCE_GROUP_NAME"
+echo "STORAGE_ACCOUNT_NAME: $STORAGE_ACCOUNT_NAME"
+echo "CONTAINER_NAME: $CONTAINER_NAME"
+echo "ACCESS_KEY: $ACCESS_KEY"
+
 # Creating a backend.tf file with the storage account details
 cat <<EOF >../Terraform/backend.tf
 terraform {
