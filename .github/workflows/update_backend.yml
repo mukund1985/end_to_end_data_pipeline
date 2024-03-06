@@ -1,0 +1,29 @@
+name: Update Backend Configuration
+
+on:
+  workflow_run:
+    workflows: ['Initial Infrastructure Setup']
+    types:
+      - completed
+
+jobs:
+  update_backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get Azure Resource Details
+        run: |
+          # Fetch Azure resource details from the output of the previous workflow run
+          # and store them as environment variables
+          echo "RESOURCE_GROUP_NAME=$(jq -r '.steps.setup_infrastructure.outputs.resource_group_name' ${{ github.event.workflow_run.workflow_file }})"
+          echo "STORAGE_ACCOUNT_NAME=$(jq -r '.steps.setup_infrastructure.outputs.storage_account_name' ${{ github.event.workflow_run.workflow_file }})"
+          echo "CONTAINER_NAME=tfstate"
+          echo "ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
+
+        id: get_resource_details
+
+      - name: Setup Backend
+        run: |
+          ./Scripts/setup_backend.sh "${{ env.RESOURCE_GROUP_NAME }}" "${{ env.STORAGE_ACCOUNT_NAME }}" "${{ env.CONTAINER_NAME }}" "${{ env.ACCESS_KEY }}"
+
+        # Ensure the script has executable permissions
+        working-directory: ./Scripts
