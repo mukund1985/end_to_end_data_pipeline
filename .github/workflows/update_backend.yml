@@ -22,8 +22,7 @@ jobs:
 
         id: get_resource_details
       - name: Debug Output
-        run: pwd
-          ls -l ./end_to_end_data_pipeline/Scripts
+        run: ls -l ./end_to_end_data_pipeline/Scripts
 
       - name: Setup Backend
         run: |
@@ -31,4 +30,4 @@ jobs:
           pwd
 
         # Ensure the script has executable permissions
-        working-directory: ./
+        # working-directory: ./
