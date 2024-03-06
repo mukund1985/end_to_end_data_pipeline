@@ -1,6 +1,7 @@
 name: Update Backend Configuration
 
 on:
+  workflow_dispatch:
   workflow_run:
     workflows: ['Initial Infrastructure Setup']
     types:
