@@ -23,7 +23,9 @@ jobs:
         id: get_resource_details
 
       - name: Print Current Directory
-        run: ls -ltr
+        run:
+          cd /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline
+          ls -ltr
 
     #   - name: Setup Backend
     #     run: |
