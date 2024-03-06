@@ -24,7 +24,7 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -var="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" -var="location=${{ secrets.LOCATION }}" -out=tfplan
         working-directory: ./Terraform
 
       - name: Terraform Apply
