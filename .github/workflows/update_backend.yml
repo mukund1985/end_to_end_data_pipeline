@@ -36,6 +36,6 @@ jobs:
 
       - name: Setup Backend
         run: |
-          ./setup_backend.sh "${{ env.RESOURCE_GROUP_NAME }}" "${{ env.STORAGE_ACCOUNT_NAME }}" "${{ env.CONTAINER_NAME }}" "${{ env.ACCESS_KEY }}"
+          ./setup_backend.sh "${{ env.RESOURCE_GROUP_NAME }}" "${{ env.STORAGE_ACCOUNT_NAME }}" "${{ env.CONTAINER_NAME }}" "${{ env.STORAGE_ACCOUNT_ACCESS_KEY }}"
 
         working-directory: /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline/Scripts
