@@ -11,6 +11,9 @@ jobs:
   update_backend:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Get Azure Resource Details
         run: |
           # Fetch Azure resource details from the output of the previous workflow run
