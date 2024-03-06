@@ -31,11 +31,12 @@ jobs:
       - name: Print Current Directory
         run: |
           echo "Current directory:"
-          ls -ltr
+          bash -c 'cd /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline && ls -ltr'
 
       - name: Print Permissions
         run: |
           echo "Permissions for setup_backend.sh:"
+          cd /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline/Scripts
           ls -l setup_backend.sh
           echo "Permissions for Terraform directory:"
           ls -l ../Terraform
