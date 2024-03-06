@@ -21,10 +21,13 @@ jobs:
           echo "ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
 
         id: get_resource_details
+      - name: Debug Output
+        run: pwd
+          ls -l ./end_to_end_data_pipeline/Scripts
 
       - name: Setup Backend
         run: |
-          ./end_to_end_data_pipeline/Scripts/setup_backend.sh "${{ env.RESOURCE_GROUP_NAME }}" "${{ env.STORAGE_ACCOUNT_NAME }}" "${{ env.CONTAINER_NAME }}" "${{ env.ACCESS_KEY }}"
+          ./Scripts/setup_backend.sh "${{ env.RESOURCE_GROUP_NAME }}" "${{ env.STORAGE_ACCOUNT_NAME }}" "${{ env.CONTAINER_NAME }}" "${{ env.ACCESS_KEY }}"
           pwd
 
         # Ensure the script has executable permissions
