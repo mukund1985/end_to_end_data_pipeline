@@ -26,8 +26,8 @@ jobs:
       - name: Update backend.tf File
         run: |
           # The script that updates backend.tf should be modified to NOT prompt for any input
-          ./Scripts/update_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}" "${{ github.event.inputs.access_key }}"
-        working-directory: ./
+          ./Scripts/setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}" "${{ github.event.inputs.access_key }}"
+        working-directory: /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline
 
       - name: Commit and Push backend.tf to Repository
         run: |
@@ -36,4 +36,4 @@ jobs:
           git add Terraform/backend.tf
           git commit -m "Update backend.tf with Azure storage account details"
           git push
-        working-directory: ./
+        working-directory: /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline
