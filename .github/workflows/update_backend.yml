@@ -2,10 +2,16 @@ name: Update Backend Configuration
 
 on:
   workflow_dispatch:
-  # workflow_run:
-  #   workflows: ['Initial Infrastructure Setup']
-  #   types:
-  #     - completed
+    inputs:
+      resource_group_name:
+        description: 'Azure Resource Group Name'
+        required: true
+      storage_account_name:
+        description: 'Azure Storage Account Name'
+        required: true
+      access_key:
+        description: 'Azure Storage Account Access Key'
+        required: true
 
 jobs:
   update_backend:
@@ -14,23 +20,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Download Terraform Outputs Artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: terraform-outputs
-
-      - name: Read Terraform Outputs
-        id: read_outputs
-        run: |
-          CONTENTS=$(cat terraform-outputs.json)
-          echo "RESOURCE_GROUP_NAME=$(echo $CONTENTS | jq -r '.resource_group_name')"
-          echo "STORAGE_ACCOUNT_NAME=$(echo $CONTENTS | jq -r '.storage_account_name')"
-          echo "ACCESS_KEY=$(echo $CONTENTS | jq -r '.access_key')"
-          echo "::set-output name=resource_group_name::$(echo $CONTENTS | jq -r '.resource_group_name')"
-          echo "::set-output name=storage_account_name::$(echo $CONTENTS | jq -r '.storage_account_name')"
-          echo "::set-output name=access_key::$(echo $CONTENTS | jq -r '.access_key')"
-
       - name: Setup Backend
         run: |
-          ./setup_backend.sh "${{ steps.read_outputs.outputs.resource_group_name }}" "${{ steps.read_outputs.outputs.storage_account_name }}" "tfstate" "${{ steps.read_outputs.outputs.access_key }}"
+          echo "Setting up backend with provided details."
+          ./setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "tfstate" "${{ github.event.inputs.access_key }}"
         working-directory: ./Scripts
