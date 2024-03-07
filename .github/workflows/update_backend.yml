@@ -33,6 +33,11 @@ jobs:
           git config --local user.email "mukund.pandey@gmail.com"
           git add Terraform/backend.tf
           git commit -m "Update backend.tf with Azure storage account details"
-          # Corrected the push command to use GITHUB_TOKEN for authentication
-          git -c http.extraheader="AUTHORIZATION: bearer ${{ secrets.GITHUB_TOKEN }}" push --set-upstream origin "${{ github.head_ref }}" --force
+          # Determine the correct branch to push using a conditional expression
+          BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          git -c http.extraheader="AUTHORIZATION: bearer ${{ secrets.GITHUB_TOKEN }}" push origin HEAD:$BRANCH_NAME --force
         working-directory: ${{ github.workspace }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_REF: ${{ github.ref }}
