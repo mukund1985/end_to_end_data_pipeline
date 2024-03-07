@@ -21,7 +21,7 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -var="location=East US"
         working-directory: ./Terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
