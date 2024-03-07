@@ -56,6 +56,11 @@ jobs:
         run: |
           echo '{"resource_group_name": "${{ steps.setup.outputs.resource_group_name }}", "storage_account_name": "${{ steps.setup.outputs.storage_account_name }}", "access_key": "${{ steps.setup.outputs.access_key }}"}' > terraform-outputs.json
 
+      - name: List Current Directory Contents
+        run: |
+          pwd
+          ls -lah
+
       - name: Upload Terraform Outputs as Artifact
         uses: actions/upload-artifact@v2
         with:
