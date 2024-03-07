@@ -5,7 +5,7 @@ STORAGE_ACCOUNT_NAME="$2"
 CONTAINER_NAME="$3"
 ACCESS_KEY="$4"
 
-cat <<EOF >../Terraform/backend.tf
+cat <<EOF >"$GITHUB_WORKSPACE/Terraform/backend.tf"
 terraform {
   backend "azurerm" {
     resource_group_name  = "$RESOURCE_GROUP_NAME"
