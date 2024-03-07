@@ -1,4 +1,4 @@
-name: Update Backend Configuration
+name: Update Backend Configuration and Deploy
 
 on:
   workflow_dispatch:
@@ -12,32 +12,55 @@ on:
       container_name:
         description: 'Storage Container Name'
         required: true
-      access_key:
-        description: 'Storage Account Access Key'
-        required: true
 
 jobs:
-  update_backend:
+  update_backend_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      # Set up Azure authentication for Terraform
+      - name: Set up Azure authentication for Terraform
+        run: |
+          echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
+
+      # Update backend.tf File using the script
       - name: Update backend.tf File
-        run: ./Scripts/setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}" "${{ github.event.inputs.access_key }}"
+        run: |
+          ./Scripts/setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}"
         working-directory: ${{ github.workspace }}
 
-      - name: Commit and Push backend.tf to Repository
+      # Configure Git user for commit
+      - name: Configure Git
         run: |
           git config --local user.name "mukund1985"
           git config --local user.email "mukund.pandey@gmail.com"
+
+      # Commit and push changes to backend.tf
+      - name: Commit and Push backend.tf to Repository
+        run: |
           git add Terraform/backend.tf
           git commit -m "Update backend.tf with Azure storage account details"
-          # Determine the correct branch to push using a conditional expression
           BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           git -c http.extraheader="AUTHORIZATION: bearer ${{ secrets.GITHUB_TOKEN }}" push origin HEAD:$BRANCH_NAME --force
-        working-directory: ${{ github.workspace }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
-          GITHUB_REF: ${{ github.ref }}
+
+      # Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: latest
+
+      # Initialize Terraform
+      - name: Terraform Initialize
+        run: terraform init
+        working-directory: ./Terraform
+
+      # Optionally, you can add Terraform Plan or Apply steps here
+      # - name: Terraform Plan
+      #   run: terraform plan
+      #   working-directory: ./Terraform
+
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
+      #   working-directory: ./Terraform
