@@ -6,6 +6,10 @@ on:
 jobs:
   setup_infrastructure:
     runs-on: ubuntu-latest
+    outputs:
+      resource_group_name: ${{ steps.setup.outputs.resource_group_name }}
+      storage_account_name: ${{ steps.setup.outputs.storage_account_name }}
+      access_key: ${{ steps.setup.outputs.access_key }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -38,5 +42,22 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       - name: Terraform Output
-        run: terraform output
+        id: setup
+        run: terraform output -json
         working-directory: ./Terraform
+        continue-on-error: true
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: Create Outputs JSON
+        run: |
+          echo '{"resource_group_name": "${{ steps.setup.outputs.resource_group_name }}", "storage_account_name": "${{ steps.setup.outputs.storage_account_name }}", "access_key": "${{ steps.setup.outputs.access_key }}"}' > terraform-outputs.json
+
+      - name: Upload Terraform Outputs as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: terraform-outputs
+          path: terraform-outputs.json

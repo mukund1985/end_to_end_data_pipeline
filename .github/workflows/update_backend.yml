@@ -14,35 +14,23 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Get Azure Resource Details
-        run: |
-          # Fetch Azure resource details from the output of the previous workflow run
-          # and store them as environment variables
-          echo "Fetching Azure resource details..."
-          RESOURCE_GROUP_NAME=$(jq -r '.steps.setup_infrastructure.outputs.resource_group_name' ${{ github.event.workflow_run.workflow_file }})
-          STORAGE_ACCOUNT_NAME=$(jq -r '.steps.setup_infrastructure.outputs.storage_account_name' ${{ github.event.workflow_run.workflow_file }})
-          CONTAINER_NAME=tfstate
-          ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}
-          echo "RESOURCE_GROUP_NAME: $RESOURCE_GROUP_NAME"
-          echo "STORAGE_ACCOUNT_NAME: $STORAGE_ACCOUNT_NAME"
-          echo "CONTAINER_NAME: $CONTAINER_NAME"
-          echo "ACCESS_KEY: $ACCESS_KEY"
+      - name: Download Terraform Outputs Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: terraform-outputs
 
-      - name: Print Current Directory
+      - name: Read Terraform Outputs
+        id: read_outputs
         run: |
-          echo "Current directory:"
-          bash -c 'cd /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline && ls -ltr'
-
-      - name: Print Permissions
-        run: |
-          echo "Permissions for setup_backend.sh:"
-          cd /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline/Scripts
-          ls -l setup_backend.sh
-          echo "Permissions for Terraform directory:"
-          ls -l ../Terraform
+          CONTENTS=$(cat terraform-outputs.json)
+          echo "RESOURCE_GROUP_NAME=$(echo $CONTENTS | jq -r '.resource_group_name')"
+          echo "STORAGE_ACCOUNT_NAME=$(echo $CONTENTS | jq -r '.storage_account_name')"
+          echo "ACCESS_KEY=$(echo $CONTENTS | jq -r '.access_key')"
+          echo "::set-output name=resource_group_name::$(echo $CONTENTS | jq -r '.resource_group_name')"
+          echo "::set-output name=storage_account_name::$(echo $CONTENTS | jq -r '.storage_account_name')"
+          echo "::set-output name=access_key::$(echo $CONTENTS | jq -r '.access_key')"
 
       - name: Setup Backend
         run: |
-          echo "Running setup_backend.sh script..."
-          ./setup_backend.sh "${RESOURCE_GROUP_NAME}" "${STORAGE_ACCOUNT_NAME}" "${CONTAINER_NAME}" "${ACCESS_KEY}"
-        working-directory: /home/runner/work/end_to_end_data_pipeline/end_to_end_data_pipeline/Scripts
+          ./setup_backend.sh "${{ steps.read_outputs.outputs.resource_group_name }}" "${{ steps.read_outputs.outputs.storage_account_name }}" "tfstate" "${{ steps.read_outputs.outputs.access_key }}"
+        working-directory: ./Scripts
