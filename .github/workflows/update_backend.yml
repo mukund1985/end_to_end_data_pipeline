@@ -4,13 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       resource_group_name:
-        description: 'Azure Resource Group Name'
+        description: 'Resource Group Name'
         required: true
       storage_account_name:
-        description: 'Azure Storage Account Name'
+        description: 'Storage Account Name'
+        required: true
+      container_name:
+        description: 'Storage Container Name'
         required: true
       access_key:
-        description: 'Azure Storage Account Access Key'
+        description: 'Storage Account Access Key'
         required: true
 
 jobs:
@@ -20,8 +23,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Setup Backend
+      - name: Update backend.tf File
         run: |
-          echo "Setting up backend with provided details."
-          ./setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "tfstate" "${{ github.event.inputs.access_key }}"
-        working-directory: ./Scripts
+          # The script that updates backend.tf should be modified to NOT prompt for any input
+          ./Scripts/update_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}" "${{ github.event.inputs.access_key }}"
+        working-directory: ./
+
+      - name: Commit and Push backend.tf to Repository
+        run: |
+          git config --local user.name "mukund1985"
+          git config --local user.email "mukund.pandey@gmail.com"
+          git add Terraform/backend.tf
+          git commit -m "Update backend.tf with Azure storage account details"
+          git push
+        working-directory: ./
