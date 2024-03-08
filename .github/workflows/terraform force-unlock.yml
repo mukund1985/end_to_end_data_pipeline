@@ -2,6 +2,10 @@ name: Manual Unlock Terraform State
 
 on:
   workflow_dispatch:
+    inputs:
+      lock_id:
+        description: 'Current Terraform State Lock ID'
+        required: true
 
 jobs:
   unlock:
@@ -33,15 +37,8 @@ jobs:
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
 
-      - name: Extract and Force Unlock
-        run: |
-          # Hypothetical script or command to extract the current lock ID from logs or backend
-          LOCK_ID=$(some_command_to_extract_lock_id)
-          if [ ! -z "$LOCK_ID" ]; then
-            terraform force-unlock "$LOCK_ID" -force
-          else
-            echo "No lock ID found."
-          fi
+      - name: Force Unlock Terraform State
+        run: terraform force-unlock ${{ github.event.inputs.lock_id }} -force
         working-directory: ./Terraform
         env:
           TF_CLI_ARGS: -force
