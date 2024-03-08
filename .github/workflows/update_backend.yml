@@ -59,7 +59,7 @@ jobs:
         working-directory: ./Terraform
 
       - name: Terraform Plan
-        run: terraform plan -var="resource_group_name=${{ github.event.inputs.resource_group_name }}" -var="storage_account_name=${{ github.event.inputs.storage_account_name }}" -var="container_name=${{ github.event.inputs.container_name }}" -out=tfplan
+        run: terraform plan -var="resource_group_name=${{ github.event.inputs.resource_group_name }}" -var="storage_account_name=${{ github.event.inputs.storage_account_name }}" -var="container_name=${{ github.event.inputs.container_name }}" -var="location=${{ secrets.LOCATION }}" -out=tfplan
         working-directory: ./Terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
