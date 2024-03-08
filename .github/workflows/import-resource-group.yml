@@ -12,6 +12,9 @@ on:
       container_name: # Assuming you want to add this for some reason
         description: 'Azure Storage Container Name'
         required: false # Set to true if it's always required
+      location:
+        description: 'Location of the Azure resources'
+        required: true
 
 jobs:
   import-resource-group:
@@ -32,6 +35,8 @@ jobs:
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
+          # Set the location as an environment variable
+          echo "TF_VAR_location=${{ github.event.inputs.location }}" >> $GITHUB_ENV
           # If container_name is to be used later in Terraform
           if [ -n "${{ github.event.inputs.container_name }}" ]; then
             echo "TF_VAR_container_name=${{ github.event.inputs.container_name }}" >> $GITHUB_ENV
