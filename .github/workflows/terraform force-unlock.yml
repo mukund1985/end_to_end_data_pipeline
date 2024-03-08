@@ -2,10 +2,6 @@ name: Manual Unlock Terraform State
 
 on:
   workflow_dispatch:
-    inputs:
-      lock_id:
-        description: 'Current Terraform State Lock ID'
-        required: true
 
 jobs:
   unlock:
@@ -30,5 +26,5 @@ jobs:
           ARM_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}
 
       - name: Force Unlock Terraform State (Direct Execution Test)
-        run: terraform force-unlock 780dbb33-03ad-75cc-77c3-5d279aad1643 -force
+        run: terraform force-unlock 780dbb33-03ad-75cc-77c3-5d279aad1643
         working-directory: ./Terraform
