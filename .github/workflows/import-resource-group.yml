@@ -2,10 +2,6 @@ name: Terraform Import Resource Group and Setup Variables
 
 on:
   workflow_dispatch:
-    inputs:
-      container_name: # Assuming you want to add this for some reason
-        description: 'Azure Storage Container Name'
-        required: false # Set to true if it's always required
 
 jobs:
   import-resource-group:
@@ -16,6 +12,7 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
       ARM_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}
+      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
