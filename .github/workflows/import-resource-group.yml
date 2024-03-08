@@ -1,4 +1,4 @@
-name: Terraform Import Resource Group
+name: Terraform Import Resource Group and Setup Variables
 
 on:
   workflow_dispatch:
@@ -9,6 +9,9 @@ on:
       resource_group_name:
         description: 'Azure Resource Group Name to Import'
         required: true
+      container_name: # Assuming you want to add this for some reason
+        description: 'Azure Storage Container Name'
+        required: false # Set to true if it's always required
 
 jobs:
   import-resource-group:
@@ -22,13 +25,17 @@ jobs:
         with:
           terraform_version: latest
 
-      - name: Configure Azure Credentials
+      - name: Configure Azure Credentials and Variables
         run: |
           echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
           echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
+          # If container_name is to be used later in Terraform
+          if [ -n "${{ github.event.inputs.container_name }}" ]; then
+            echo "TF_VAR_container_name=${{ github.event.inputs.container_name }}" >> $GITHUB_ENV
+          fi
 
       - name: Terraform Init
         run: terraform init
