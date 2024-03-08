@@ -20,27 +20,50 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Set up Azure authentication for Terraform
       - name: Set up Azure authentication for Terraform
         run: |
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
 
-      # Update backend.tf File using the script
       - name: Update backend.tf File
         run: |
           ./Scripts/setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}"
         working-directory: ${{ github.workspace }}
 
-      # Configure Git user for commit
       - name: Configure Git
         run: |
           git config --local user.name "mukund1985"
           git config --local user.email "mukund.pandey@gmail.com"
 
-      # Commit and push changes to backend.tf
       - name: Commit and Push backend.tf to Repository
         run: |
           git add Terraform/backend.tf
           git commit -m "Update backend.tf with Azure storage account details"
           BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           git -c http.extraheader="AUTHORIZATION: bearer ${{ secrets.GITHUB_TOKEN }}" push origin HEAD:$BRANCH_NAME --force
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: latest
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./Terraform
+
+      - name: Terraform Plan
+        run: terraform plan -var="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" -var="location=${{ secrets.LOCATION }}" -out=tfplan
+        working-directory: ./Terraform
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./Terraform
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
