@@ -13,9 +13,9 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type = "LRS"
 }
 
-# Storage Container
+# Storage Container - Updated to use the container_name variable
 resource "azurerm_storage_container" "sc" {
-  name                  = "tfstate"
+  name                  = var.container_name
   storage_account_name  = azurerm_storage_account.sa.name
   container_access_type = "private"
 }
