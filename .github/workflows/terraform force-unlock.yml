@@ -29,11 +29,6 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}
 
-      - name: Force Unlock Terraform State
-        run: |
-          LOCK_ID="${{ github.event.inputs.lock_id }}"
-          echo "Attempting to unlock state with lock ID: $LOCK_ID"
-          terraform force-unlock "$LOCK_ID" -force
+      - name: Force Unlock Terraform State (Direct Execution Test)
+        run: terraform force-unlock 780dbb33-03ad-75cc-77c3-5d279aad1643 -force
         working-directory: ./Terraform
-        env:
-          TF_CLI_ARGS: -force
