@@ -38,7 +38,7 @@ jobs:
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
 
       - name: Force Unlock Terraform State
-        run: terraform force-unlock ${{ github.event.inputs.lock_id }} -force
+        run: terraform force-unlock ${{ github.event.inputs.lock_id }}
         working-directory: ./Terraform
         env:
           TF_CLI_ARGS: '-force'
