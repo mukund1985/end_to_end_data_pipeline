@@ -3,8 +3,8 @@ name: Manual Unlock Terraform State
 on:
   workflow_dispatch:
     inputs:
-      lock_id:
-        description: 'Current Terraform State Lock ID'
+      lock_info:
+        description: 'Error message containing the lock information'
         required: true
 
 jobs:
@@ -19,6 +19,13 @@ jobs:
         with:
           terraform_version: latest
 
+      - name: Extract Lock ID
+        run: |
+          LOCK_INFO="${{ github.event.inputs.lock_info }}"
+          LOCK_ID=$(echo "$LOCK_INFO" | awk '/ID:/ {print $2}')
+          echo "Lock ID: $LOCK_ID"
+          echo "::set-output name=lock_id::$LOCK_ID"
+
       - name: Terraform Init
         run: terraform init
         working-directory: ./Terraform
@@ -30,7 +37,7 @@ jobs:
           ARM_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}
 
       - name: Force Unlock Terraform State
-        run: terraform force-unlock ${{ github.event.inputs.lock_id }} -force
+        run: terraform force-unlock "${{ needs.unlock.outputs.lock_id }}" -force
         working-directory: ./Terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
