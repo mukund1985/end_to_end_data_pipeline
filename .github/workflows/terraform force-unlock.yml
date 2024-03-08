@@ -10,10 +10,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Extract Lock ID
-        id: extract_lock_id
-        run: echo "::set-output name=lock_id::$(echo ${{ github.event.inputs.lock_error_message }} | grep -oP 'ID:\s+\K\w+-\w+-\w+-\w+-\w+')"
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -29,6 +25,13 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}
 
+      - name: Configure Azure Credentials
+        run: |
+          echo "ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
+          echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
       - name: Force Unlock Terraform State
         run: terraform force-unlock 780dbb33-03ad-75cc-77c3-5d279aad1643
         working-directory: ./Terraform
