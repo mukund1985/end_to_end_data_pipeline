@@ -6,14 +6,11 @@ on:
       resource_group_name:
         description: 'Resource Group Name'
         required: true
+      location:
+        description: 'Azure Location for Resources'
+        required: true
       storage_account_name:
         description: 'Storage Account Name'
-        required: true
-      container_name:
-        description: 'Storage Container Name'
-        required: true
-      access_key:
-        description: 'Storage Account Access Key'
         required: true
 
 jobs:
@@ -29,13 +26,7 @@ jobs:
           echo "ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}" >> $GITHUB_ENV
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
-          echo "ARM_ACCESS_KEY=${{ github.event.inputs.access_key }}" >> $GITHUB_ENV
-
-      - name: Update backend.tf File
-        run: |
-          chmod +x ./Scripts/setup_backend.sh
-          ./Scripts/setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}" "${{ github.event.inputs.access_key }}"
-        working-directory: ${{ github.workspace }}
+          echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -50,3 +41,8 @@ jobs:
         run: |
           terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ github.event.inputs.resource_group_name }}
         working-directory: ./Terraform
+        env:
+          TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
+          TF_VAR_resource_group_name: ${{ github.event.inputs.resource_group_name }}
+          TF_VAR_location: ${{ github.event.inputs.location }}
+          TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
