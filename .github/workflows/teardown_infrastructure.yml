@@ -1,7 +1,12 @@
 name: Teardown Infrastructure
 
 on:
-  workflow_dispatch: # Allows manual trigger from the GitHub UI
+  workflow_dispatch:
+    inputs:
+      storage_account_name:
+        description: 'Storage Account Name'
+        required: true
+      # Add other inputs as needed
 
 jobs:
   destroy:
@@ -24,6 +29,7 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
 
       - name: Terraform Destroy
@@ -34,6 +40,7 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
