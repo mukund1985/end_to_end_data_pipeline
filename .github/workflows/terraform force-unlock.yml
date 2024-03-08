@@ -2,6 +2,10 @@ name: Manual Unlock Terraform State
 
 on:
   workflow_dispatch:
+    inputs:
+      lock_id:
+        description: 'Terraform State Lock ID'
+        required: true
 
 jobs:
   unlock:
@@ -32,8 +36,9 @@ jobs:
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
+
       - name: Force Unlock Terraform State
-        run: terraform force-unlock 780dbb33-03ad-75cc-77c3-5d279aad1643
+        run: terraform force-unlock ${{ github.event.inputs.lock_id }} -force
         working-directory: ./Terraform
         env:
-          TF_CLI_ARGS: -force
+          TF_CLI_ARGS: '-force'
