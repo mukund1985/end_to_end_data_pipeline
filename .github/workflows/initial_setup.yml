@@ -2,6 +2,19 @@ name: Initial Infrastructure Setup
 
 on:
   workflow_dispatch:
+    inputs:
+      resource_group_name:
+        description: 'The name of the Resource Group'
+        required: true
+      location:
+        description: 'The location of the Azure resources'
+        required: true
+      container_name:
+        description: 'The name of the container within the storage account'
+        required: true
+      storage_account_name:
+        description: 'The name of the storage account'
+        required: true
 
 jobs:
   setup_infrastructure:
@@ -29,7 +42,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
       - name: Terraform Plan
-        run: terraform plan -var="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" -var="location=${{ secrets.LOCATION }}" -out=tfplan
+        run: terraform plan -var="resource_group_name=${{ github.event.inputs.resource_group_name }}" -var="location=${{ github.event.inputs.location }}" -var="container_name=${{ github.event.inputs.container_name }}" -var="storage_account_name=${{ github.event.inputs.storage_account_name }}" -out=tfplan
         working-directory: ./Terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -57,17 +70,7 @@ jobs:
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-      - name: Create Outputs JSON
-        run: |
-          echo '{"resource_group_name": "${{ steps.setup.outputs.resource_group_name }}", "storage_account_name": "${{ steps.setup.outputs.storage_account_name }}", "access_key": "${{ steps.setup.outputs.access_key }}"}' > terraform-outputs.json
-
       - name: List Current Directory Contents
         run: |
           pwd
           ls -lah
-
-      - name: Upload Terraform Outputs as Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: terraform-outputs
-          path: terraform-outputs.json
