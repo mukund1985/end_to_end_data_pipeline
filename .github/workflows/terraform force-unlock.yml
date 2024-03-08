@@ -33,8 +33,15 @@ jobs:
           echo "ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}" >> $GITHUB_ENV
           echo "ARM_ACCESS_KEY=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}" >> $GITHUB_ENV
 
-      - name: Force Unlock Terraform State
-        run: terraform force-unlock 23e2425f-ec53-229c-37bd-5c97c910a211
+      - name: Extract and Force Unlock
+        run: |
+          # Hypothetical script or command to extract the current lock ID from logs or backend
+          LOCK_ID=$(some_command_to_extract_lock_id)
+          if [ ! -z "$LOCK_ID" ]; then
+            terraform force-unlock "$LOCK_ID" -force
+          else
+            echo "No lock ID found."
+          fi
         working-directory: ./Terraform
         env:
           TF_CLI_ARGS: -force
