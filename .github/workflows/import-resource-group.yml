@@ -3,12 +3,6 @@ name: Terraform Import Resource Group and Setup Variables
 on:
   workflow_dispatch:
     inputs:
-      resource_group_name:
-        description: 'Resource Group Name'
-        required: true
-      location:
-        description: 'Azure Location for Resources'
-        required: true
       storage_account_name:
         description: 'Storage Account Name'
         required: true
@@ -39,10 +33,10 @@ jobs:
 
       - name: Import Resource Group
         run: |
-          terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ github.event.inputs.resource_group_name }}
+          terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}
         working-directory: ./Terraform
         env:
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
-          TF_VAR_resource_group_name: ${{ github.event.inputs.resource_group_name }}
-          TF_VAR_location: ${{ github.event.inputs.location }}
+          TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
+          TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
