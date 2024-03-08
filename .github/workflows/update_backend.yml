@@ -29,17 +29,20 @@ jobs:
           ./Scripts/setup_backend.sh "${{ github.event.inputs.resource_group_name }}" "${{ github.event.inputs.storage_account_name }}" "${{ github.event.inputs.container_name }}"
         working-directory: ${{ github.workspace }}
 
-      - name: Configure Git
+      - name: Commit and Push backend.tf to Repository
         run: |
           git config --local user.name "mukund1985"
           git config --local user.email "mukund.pandey@gmail.com"
-
-      - name: Commit and Push backend.tf to Repository
-        run: |
           git add Terraform/backend.tf
-          git commit -m "Update backend.tf with Azure storage account details"
-          BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          git -c http.extraheader="AUTHORIZATION: bearer ${{ secrets.GITHUB_TOKEN }}" push origin HEAD:$BRANCH_NAME --force
+          # Check if there are any changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update backend.tf with Azure storage account details"
+            BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+            git -c http.extraheader="AUTHORIZATION: bearer ${{ secrets.GITHUB_TOKEN }}" push origin HEAD:$BRANCH_NAME --force
+          fi
+        working-directory: ${{ github.workspace }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
