@@ -31,6 +31,11 @@ jobs:
         run: terraform init
         working-directory: ./Terraform
 
+      # Review Terraform State Before Import
+      - name: Review Terraform State Before Import
+        run: terraform state list
+        working-directory: ./Terraform
+
       - name: Import Resource Group
         run: |
           terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}
@@ -40,3 +45,10 @@ jobs:
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
+
+      # Review Terraform State After Import
+      - name: Review Terraform State After Import
+        run: |
+          terraform state list
+          terraform state show azurerm_resource_group.rg
+        working-directory: ./Terraform
