@@ -13,7 +13,7 @@ resource "azurerm_storage_account" "sa" {
   account_replication_type = "LRS"
 }
 
-# Storage Container - Updated to use the container_name variable
+# Storage Container
 resource "azurerm_storage_container" "sc" {
   name                  = var.container_name
   storage_account_name  = azurerm_storage_account.sa.name
@@ -26,4 +26,15 @@ resource "random_string" "sa_suffix" {
   special = false
   upper   = false
   numeric = false
+}
+
+# Network Module
+module "network" {
+  source                  = "./modules/network"
+  vnet_name               = var.vnet_name
+  vnet_address_space      = var.vnet_address_space
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  subnet_name             = var.subnet_name
+  subnet_address_prefixes = var.subnet_address_prefixes
 }

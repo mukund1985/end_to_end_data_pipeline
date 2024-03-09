@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2 # Automatically uses the latest v2 release
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v1 # Automatically uses the latest v1 release
         with:
           terraform_version: latest
 
       - name: Azure Login
-        uses: azure/login@v1
+        uses: azure/login@v1 # Automatically uses the latest v1 release
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
