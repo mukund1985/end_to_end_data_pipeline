@@ -31,11 +31,6 @@ jobs:
         run: terraform init
         working-directory: ./Terraform
 
-      # Review Terraform State Before Import
-      - name: Review Terraform State Before Import
-        run: terraform state list
-        working-directory: ./Terraform
-
       - name: Import Resource Group
         run: |
           terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}
