@@ -1,51 +1,48 @@
 name: Deploy Infrastructure
 
-# This workflow is triggered manually without inputs since we're using secrets.
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment (e.g., dev, staging, prod)'
+        required: false
+        default: 'dev'
+      vnet_name:
+        description: 'Virtual Network name'
+        required: false
+        default: 'myVnet'
+      subnet_name:
+        description: 'Subnet name within the Virtual Network'
+        required: false
+        default: 'mySubnet'
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest # The job runs on the latest Ubuntu VM provided by GitHub.
+    runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository to access Terraform files.
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      # Set up Terraform CLI in the runner environment.
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: latest
 
-      # Log in to Azure using the credentials stored in the AZURE_CREDENTIALS secret.
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Initialize Terraform with backend configuration from secrets.
       - name: Terraform Init with Backend
-        run: |
-          terraform init \
-            -backend-config="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" \
-            -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT_NAME }}" \
-            -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
-            -backend-config="key=terraform.tfstate" \
-            -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
+        run: terraform init \
+          -backend-config="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" \
+          -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT_NAME }}" \
+          -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
+          -backend-config="key=terraform.tfstate" \
+          -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
         working-directory: ./Terraform
-        env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-          TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
-          TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
-          TF_VAR_location: ${{ secrets.LOCATION }}
-          TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
 
-      # Generate a Terraform execution plan and save it to a file named 'tfplan'.
       - name: Terraform Plan
         run: terraform plan -out=tfplan
         working-directory: ./Terraform
@@ -58,17 +55,14 @@ jobs:
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
-          TF_VAR_network_acls_bypass: 'AzureServices'
-          TF_VAR_network_acls_default_action: 'Deny'
-          # Organized and clearly commented
-          # Network configuration variables
-          TF_VAR_environment: 'dev'
-          TF_VAR_vnet_name: 'myVnet'
-          TF_VAR_subnet_name: 'mySubnet'
+          # Dynamic or deployment-specific variables
+          TF_VAR_environment: ${{ github.event.inputs.environment }}
+          TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
+          TF_VAR_subnet_name: ${{ github.event.inputs.subnet_name }}
+          # Assuming CIDR blocks are static; adjust if needed
           TF_VAR_vnet_address_space: '["10.0.0.0/16"]'
           TF_VAR_subnet_address_prefixes: '["10.0.1.0/24"]'
 
-      # Apply the Terraform plan to create or update resources.
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ./Terraform
@@ -77,16 +71,15 @@ jobs:
           ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+          # Repeat environment variables for consistency
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
-          TF_VAR_network_acls_bypass: 'AzureServices'
-          TF_VAR_network_acls_default_action: 'Deny'
-          # Organized and clearly commented
-          # Network configuration variables
-          TF_VAR_environment: 'dev'
-          TF_VAR_vnet_name: 'myVnet'
-          TF_VAR_subnet_name: 'mySubnet'
+          # Dynamic or deployment-specific variables
+          TF_VAR_environment: ${{ github.event.inputs.environment }}
+          TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
+          TF_VAR_subnet_name: ${{ github.event.inputs.subnet_name }}
+          # CIDR blocks
           TF_VAR_vnet_address_space: '["10.0.0.0/16"]'
           TF_VAR_subnet_address_prefixes: '["10.0.1.0/24"]'
