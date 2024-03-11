@@ -58,6 +58,7 @@ jobs:
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
+          TF_VAR_network_acls_bypass: 'AzureServices'
 
       # Apply the Terraform plan to create or update resources.
       - name: Terraform Apply
@@ -72,3 +73,4 @@ jobs:
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
+          TF_VAR_network_acls_bypass: 'AzureServices'
