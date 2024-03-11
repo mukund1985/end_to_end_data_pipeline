@@ -98,3 +98,9 @@ variable "subnet_address_prefixes" {
   type        = list(string)
   default     = ["10.0.1.0/24"]
 }
+
+variable "sql_admin_password" {
+  description = "The administrator password for SQL Server."
+  type        = string
+  sensitive   = true
+}

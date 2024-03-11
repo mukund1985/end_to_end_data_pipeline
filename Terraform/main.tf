@@ -74,3 +74,13 @@ module "data_lake" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 }
+
+#Synapse Module Integration 
+
+module "synapse" {
+  source              = "./modules/synapse"
+  environment         = var.environment
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sql_admin_password  = var.sql_admin_password
+}
