@@ -59,3 +59,10 @@ module "network" {
   subnet_address_prefixes = var.subnet_address_prefixes
 }
 
+# Data Factory Module Integration
+module "data_factory" {
+  source              = "./modules/data_factory"
+  environment         = var.environment
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
