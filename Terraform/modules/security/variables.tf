@@ -56,3 +56,4 @@ variable "network_acls_bypass" {
   type        = string
   default     = "AzureServices"
 }
+

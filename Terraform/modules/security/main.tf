@@ -16,3 +16,6 @@ resource "azurerm_key_vault" "kv" {
     bypass         = var.network_acls_bypass
   }
 }
+# Terraform doesn't support creating an Azure Active Directory. 
+
+

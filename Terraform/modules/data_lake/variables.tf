@@ -1,11 +1,11 @@
 variable "environment" {
-  description = "Deployment environment (e.g., dev, staging, prod)"
-}
-
-variable "location" {
-  description = "Azure region for deploying resources"
+  description = "The deployment environment."
 }
 
 variable "resource_group_name" {
-  description = "Resource group name for the data lake storage account"
+  description = "The name of the resource group."
+}
+
+variable "location" {
+  description = "The location for all resources."
 }
