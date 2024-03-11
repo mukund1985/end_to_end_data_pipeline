@@ -100,13 +100,13 @@ This guide provides a comprehensive roadmap for setting up and managing our end-
 
 ## Modules
 
-**data_factory**: For Azure Data Factory, to manage data ingestion.
-**data_lake**: For Azure Data Lake Storage Gen2, to handle raw, cleaned, and transformed data storage.
-**databricks**: For Azure Databricks, to perform data transformation.
-**network**: To manage networking resources such as Virtual Networks and subnets.
-**power_bi**: Even though Power BI resources aren't typically managed through Terraform, this module could be used for setting up any necessary Azure resources that Power BI might integrate with.
-**security**: To handle the creation and management of security and compliance resources, including Azure Key Vault.
-**synapse**: For Azure Synapse Analytics workspace and resources.
+- **data_factory**: For Azure Data Factory, to manage data ingestion.
+- **data_lake**: For Azure Data Lake Storage Gen2, to handle raw, cleaned, and transformed data storage.
+- **databricks**: For Azure Databricks, to perform data transformation.
+- **network**: To manage networking resources such as Virtual Networks and subnets.
+- **power_bi**: Even though Power BI resources aren't typically managed through Terraform, this module could be used for setting up any necessary Azure resources that Power BI might integrate with.
+- **security**: To handle the creation and management of security and compliance resources, including Azure Key Vault.
+- **synapse**: For Azure Synapse Analytics workspace and resources.
 
 ## Folder Structure
 
