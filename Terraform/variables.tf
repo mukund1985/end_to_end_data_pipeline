@@ -55,3 +55,24 @@ variable "network_acls_default_action" {
 variable "network_acls_bypass" {
   description = "Specifies which traffic can bypass the network ACLs."
 }
+
+# For Network module 
+variable "environment" {
+  description = "The deployment environment prefix for resource naming."
+}
+
+variable "vnet_name" {
+  description = "The name of the virtual network."
+}
+
+variable "vnet_address_space" {
+  description = "The address space for the virtual network in CIDR notation."
+}
+
+variable "subnet_name" {
+  description = "The name of the subnet."
+}
+
+variable "subnet_address_prefixes" {
+  description = "The address prefixes for the subnet in CIDR notation."
+}

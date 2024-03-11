@@ -59,6 +59,14 @@ jobs:
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
           TF_VAR_network_acls_bypass: 'AzureServices'
+          TF_VAR_network_acls_default_action: 'Deny'
+          # Organized and clearly commented
+          # Network configuration variables
+          TF_VAR_environment: 'dev'
+          TF_VAR_vnet_name: 'myVnet'
+          TF_VAR_subnet_name: 'mySubnet'
+          TF_VAR_vnet_address_space: '["10.0.0.0/16"]'
+          TF_VAR_subnet_address_prefixes: '["10.0.1.0/24"]'
 
       # Apply the Terraform plan to create or update resources.
       - name: Terraform Apply
@@ -74,3 +82,11 @@ jobs:
           TF_VAR_location: ${{ secrets.LOCATION }}
           TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
           TF_VAR_network_acls_bypass: 'AzureServices'
+          TF_VAR_network_acls_default_action: 'Deny'
+          # Organized and clearly commented
+          # Network configuration variables
+          TF_VAR_environment: 'dev'
+          TF_VAR_vnet_name: 'myVnet'
+          TF_VAR_subnet_name: 'mySubnet'
+          TF_VAR_vnet_address_space: '["10.0.0.0/16"]'
+          TF_VAR_subnet_address_prefixes: '["10.0.1.0/24"]'

@@ -46,3 +46,16 @@ module "security" {
   network_acls_default_action = var.network_acls_default_action # Network ACLs default action
   network_acls_bypass         = var.network_acls_bypass         # Configures network ACLs bypass options
 }
+
+# Network Module Integration
+module "network" {
+  source                  = "./modules/network"
+  environment             = var.environment # Ensure you have declared this variable or replace it with a concrete value
+  vnet_name               = var.vnet_name
+  vnet_address_space      = var.vnet_address_space
+  location                = var.location
+  resource_group_name     = var.resource_group_name
+  subnet_name             = var.subnet_name
+  subnet_address_prefixes = var.subnet_address_prefixes
+}
+
