@@ -1,5 +1,6 @@
 resource "azurerm_storage_account" "data_lake_storage" {
-  name                     = "e2e-${var.environment}-datalake${random_string.storage_suffix.result}"
+  # name                     = "e2e-${var.environment}-datalake${random_string.storage_suffix.result}"
+  name                     = "e2e-${var.environment}-datalake"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
