@@ -11,7 +11,11 @@ variable "location" {
 # Storage Account Prefix
 variable "storage_account_prefix" {
   description = "Prefix for the storage account name, ensuring uniqueness."
+  type        = string
+  # Adjust the default to something more relevant to your project
+  default = "datapipeline" # Example default, adjust as needed
 }
+
 
 # Container Name
 variable "container_name" {
