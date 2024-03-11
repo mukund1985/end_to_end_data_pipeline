@@ -66,3 +66,11 @@ module "data_factory" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 }
+
+# Data Lake Module Integration
+module "data_lake" {
+  source              = "./modules/data_lake"
+  environment         = var.environment
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
