@@ -1,34 +1,36 @@
 name: Deploy Infrastructure
 
+# This workflow is triggered manually without inputs since we're using secrets.
 on:
   workflow_dispatch:
-    inputs:
-      storage_account_name:
-        description: 'Storage Account Name'
-        required: true
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2 # Automatically uses the latest v2 release
+    runs-on: ubuntu-latest # The job runs on the latest Ubuntu VM provided by GitHub.
 
+    steps:
+      # Checkout the repository to access Terraform files.
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Set up Terraform CLI in the runner environment.
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1 # Automatically uses the latest v1 release
+        uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: latest
 
+      # Log in to Azure using the credentials stored in the AZURE_CREDENTIALS secret.
       - name: Azure Login
-        uses: azure/login@v1 # Automatically uses the latest v1 release
+        uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Initialize Terraform with backend configuration from secrets.
       - name: Terraform Init with Backend
         run: |
           terraform init \
             -backend-config="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}" \
-            -backend-config="storage_account_name=${{ github.event.inputs.storage_account_name }}" \
+            -backend-config="storage_account_name=${{ secrets.STORAGE_ACCOUNT_NAME }}" \
             -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
@@ -41,8 +43,9 @@ jobs:
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
-          TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
+          TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
 
+      # Generate a Terraform execution plan and save it to a file named 'tfplan'.
       - name: Terraform Plan
         run: terraform plan -out=tfplan
         working-directory: ./Terraform
@@ -54,8 +57,9 @@ jobs:
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
-          TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
+          TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
 
+      # Apply the Terraform plan to create or update resources.
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ./Terraform
@@ -67,4 +71,4 @@ jobs:
           TF_VAR_container_name: ${{ secrets.CONTAINER_NAME }}
           TF_VAR_resource_group_name: ${{ secrets.RESOURCE_GROUP_NAME }}
           TF_VAR_location: ${{ secrets.LOCATION }}
-          TF_VAR_storage_account_name: ${{ github.event.inputs.storage_account_name }}
+          TF_VAR_key_vault_name: ${{ secrets.KEY_VAULT_NAME }}
