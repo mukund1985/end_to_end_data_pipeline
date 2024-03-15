@@ -15,6 +15,10 @@ on:
         description: 'Subnet name within the Virtual Network'
         required: false
         default: 'mySubnet'
+      storage_account_prefix:
+        description: 'Prefix for the storage account name, ensuring uniqueness.'
+        required: false
+        default: 'datapipeline'
 
 jobs:
   deploy:
@@ -59,6 +63,7 @@ jobs:
           TF_VAR_sql_admin_login: ${{ secrets.SQL_ADMIN_LOGIN }}
           TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
           TF_VAR_storage_account_connection_string: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
+          TF_VAR_storage_account_prefix: ${{ github.event.inputs.storage_account_prefix }}
           # Dynamic or deployment-specific variables
           TF_VAR_environment: ${{ github.event.inputs.environment }}
           TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
@@ -83,6 +88,7 @@ jobs:
           TF_VAR_sql_admin_login: ${{ secrets.SQL_ADMIN_LOGIN }}
           TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
           TF_VAR_storage_account_connection_string: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
+          TF_VAR_storage_account_prefix: ${{ github.event.inputs.storage_account_prefix }}
           # Dynamic or deployment-specific variables
           TF_VAR_environment: ${{ github.event.inputs.environment }}
           TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}

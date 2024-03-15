@@ -9,7 +9,9 @@ variable "location" {
 variable "storage_account_prefix" {
   description = "Prefix for the storage account name, ensuring uniqueness."
   type        = string
+  default     = "datapipeline"
 }
+
 
 variable "container_name" {
   description = "The name of the container within the storage account."
