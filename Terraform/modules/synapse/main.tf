@@ -1,5 +1,5 @@
 resource "azurerm_synapse_workspace" "synapse" {
-  name                                 = "e2e-synapse-${var.environment}"
+  name                                 = "e2e-datapipeline-${var.environment}"
   resource_group_name                  = var.resource_group_name
   location                             = var.location
   storage_data_lake_gen2_filesystem_id = var.data_lake_gen2_filesystem_id
