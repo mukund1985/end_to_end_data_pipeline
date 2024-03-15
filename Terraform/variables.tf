@@ -94,3 +94,8 @@ variable "storage_account_connection_string" {
   type        = string
   sensitive   = true
 }
+
+variable "sql_admin_login" {
+  description = "The admin login for Azure Synapse Analytics SQL pools."
+  type        = string
+}
