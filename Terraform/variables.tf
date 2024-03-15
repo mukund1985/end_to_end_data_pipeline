@@ -82,6 +82,7 @@ variable "subnet_address_prefixes" {
 
 variable "sql_admin_login" {
   description = "The admin login for Azure Synapse Analytics SQL pools."
+  type        = string
 }
 
 variable "sql_admin_password" {
@@ -95,7 +96,4 @@ variable "storage_account_connection_string" {
   sensitive   = true
 }
 
-variable "sql_admin_login" {
-  description = "The admin login for Azure Synapse Analytics SQL pools."
-  type        = string
-}
+
