@@ -11,6 +11,7 @@ variable "resource_group_name" {
 }
 
 variable "storage_account_connection_string" {
-  description = "The connection string for the Azure storage account used in Data Factory."
+  description = "Connection string for the Azure storage account used in Data Factory."
   type        = string
+  sensitive   = true
 }

@@ -58,7 +58,7 @@ jobs:
           TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           TF_VAR_sql_admin_login: ${{ secrets.SQL_ADMIN_LOGIN }}
           TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
-          TF_VAR_STORAGE_ACCOUNT_CONNECTION_STRING: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
+          TF_VAR_storage_account_connection_string: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
           # Dynamic or deployment-specific variables
           TF_VAR_environment: ${{ github.event.inputs.environment }}
           TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
@@ -82,7 +82,7 @@ jobs:
           TF_VAR_tenant_id: ${{ secrets.ARM_TENANT_ID }}
           TF_VAR_sql_admin_login: ${{ secrets.SQL_ADMIN_LOGIN }}
           TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
-          TF_VAR_STORAGE_ACCOUNT_CONNECTION_STRING: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
+          TF_VAR_storage_account_connection_string: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
           # Dynamic or deployment-specific variables
           TF_VAR_environment: ${{ github.event.inputs.environment }}
           TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
