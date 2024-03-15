@@ -7,11 +7,15 @@ resource "azurerm_data_factory" "data_factory" {
   }
 }
 
-resource "azurerm_data_factory_linked_service_blob" "blob_storage" {
+resource "azurerm_data_factory_linked_service_blob_storage" "blob_storage" {
   name            = "${var.environment}-blobstorage"
   data_factory_id = azurerm_data_factory.data_factory.id
   description     = "Linked Service for Azure Blob Storage"
 
-  connection_string = var.storage_account_connection_string
+  connection_string {
+    value = var.storage_account_connection_string
+    type  = "SecureString"
+  }
 }
+
 
