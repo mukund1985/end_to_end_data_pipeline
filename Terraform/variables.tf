@@ -80,10 +80,6 @@ variable "subnet_address_prefixes" {
   default     = ["10.0.1.0/24"]
 }
 
-variable "data_lake_gen2_filesystem_id" {
-  description = "The filesystem ID for the Data Lake Storage Gen2 account."
-}
-
 variable "sql_admin_login" {
   description = "The admin login for Azure Synapse Analytics SQL pools."
 }

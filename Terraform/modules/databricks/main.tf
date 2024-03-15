@@ -4,5 +4,3 @@ resource "azurerm_databricks_workspace" "databricks" {
   location            = var.location
   sku                 = "standard"
 }
-
-# Define other resources such as Databricks clusters, jobs, etc.

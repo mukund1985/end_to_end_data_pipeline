@@ -7,10 +7,7 @@ resource "azurerm_storage_account" "data_lake" {
   is_hns_enabled           = true
 }
 
-# Define additional configurations such as containers, file systems, etc.
-
 resource "azurerm_storage_data_lake_gen2_filesystem" "data_lake_filesystem" {
   name               = "datalakefilesystem"
   storage_account_id = azurerm_storage_account.data_lake.id
 }
-

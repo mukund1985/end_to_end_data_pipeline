@@ -56,6 +56,7 @@ module "data_factory" {
   storage_account_connection_string   = var.storage_account_connection_string
 }
 
+
 module "data_lake" {
   source              = "./modules/data_lake"
   environment         = var.environment
@@ -64,12 +65,13 @@ module "data_lake" {
 }
 
 module "synapse" {
-  source                       = "./modules/synapse"
-  environment                  = var.environment
-  location                     = var.location
-  resource_group_name          = azurerm_resource_group.rg.name
-  sql_admin_password           = var.sql_admin_password
-  data_lake_gen2_filesystem_id = var.data_lake_gen2_filesystem_id  
-  sql_admin_login              = var.sql_admin_login               
+  source                      = "./modules/synapse"
+  environment                 = var.environment
+  location                    = var.location
+  resource_group_name         = azurerm_resource_group.rg.name
+  sql_admin_password          = var.sql_admin_password
+  data_lake_gen2_filesystem_id = module.data_lake.data_lake_gen2_filesystem_id
+  sql_admin_login             = var.sql_admin_login
 }
+
 

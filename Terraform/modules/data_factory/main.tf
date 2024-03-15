@@ -6,5 +6,3 @@ resource "azurerm_data_factory" "data_factory" {
     type = "SystemAssigned"
   }
 }
-
-# Define other resources such as linked services, datasets, and pipelines here
