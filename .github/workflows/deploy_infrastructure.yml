@@ -52,7 +52,6 @@ jobs:
             -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
-        working-directory: ./Terraform
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
