@@ -5,25 +5,24 @@ on:
     inputs:
       environment:
         description: 'Deployment environment (e.g., dev, staging, prod)'
-        required: false
+        required: true
         default: 'dev'
       vnet_name:
         description: 'Virtual Network name'
-        required: false
+        required: true
         default: 'myVnet'
       subnet_name:
         description: 'Subnet name within the Virtual Network'
-        required: false
+        required: true
         default: 'mySubnet'
       storage_account_prefix:
         description: 'Prefix for the storage account name, ensuring uniqueness.'
-        required: false
+        required: true
         default: 'datapipeline'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -38,6 +37,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Get Runner Public IP
+        run: echo "RUNNER_IP=$(curl -s https://ifconfig.me)" >> $GITHUB_ENV
+
+      - name: Set Client IP for SQL Firewall Rule
+        run: |
+          echo "TF_VAR_client_ip_addresses=\"['${{ env.RUNNER_IP }}']\"" >> $GITHUB_ENV
+
       - name: Terraform Init with Backend
         run: |
           terraform -chdir=./Terraform init \
@@ -46,6 +52,7 @@ jobs:
             -backend-config="container_name=${{ secrets.CONTAINER_NAME }}" \
             -backend-config="key=terraform.tfstate" \
             -backend-config="access_key=${{ secrets.STORAGE_ACCOUNT_ACCESS_KEY }}"
+        working-directory: ./Terraform
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
@@ -64,11 +71,9 @@ jobs:
           TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
           TF_VAR_storage_account_connection_string: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
           TF_VAR_storage_account_prefix: ${{ github.event.inputs.storage_account_prefix }}
-          # Dynamic or deployment-specific variables
           TF_VAR_environment: ${{ github.event.inputs.environment }}
           TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
           TF_VAR_subnet_name: ${{ github.event.inputs.subnet_name }}
-          # Assuming CIDR blocks are static; adjust if needed
           TF_VAR_vnet_address_space: '["10.0.0.0/16"]'
           TF_VAR_subnet_address_prefixes: '["10.0.1.0/24"]'
 
@@ -89,10 +94,8 @@ jobs:
           TF_VAR_sql_admin_password: ${{ secrets.SQL_ADMIN_PASSWORD }}
           TF_VAR_storage_account_connection_string: ${{ secrets.STORAGE_ACCOUNT_CONNECTION_STRING }}
           TF_VAR_storage_account_prefix: ${{ github.event.inputs.storage_account_prefix }}
-          # Dynamic or deployment-specific variables
           TF_VAR_environment: ${{ github.event.inputs.environment }}
           TF_VAR_vnet_name: ${{ github.event.inputs.vnet_name }}
           TF_VAR_subnet_name: ${{ github.event.inputs.subnet_name }}
-          # Assuming CIDR blocks are static; adjust if needed
           TF_VAR_vnet_address_space: '["10.0.0.0/16"]'
           TF_VAR_subnet_address_prefixes: '["10.0.1.0/24"]'

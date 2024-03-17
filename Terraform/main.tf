@@ -74,4 +74,11 @@ module "synapse" {
   sql_admin_login              = var.sql_admin_login
 }
 
-
+module "sql_database" {
+  source                = "./modules/sql_database"
+  environment           = var.environment
+  resource_group_name   = azurerm_resource_group.rg.name
+  location              = var.location
+  sql_admin_login       = var.sql_admin_login
+  sql_admin_password    = var.sql_admin_password
+}
